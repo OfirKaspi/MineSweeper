@@ -1,14 +1,18 @@
+// TODO : a winning function + chaging the restart buttn to other emoji
+// TODO : a losing function + stop the negative lives count 
+// TODO : BONUSES
 
 const MINE = '💣'
 var gBoard
 var gMines
+var isMineFirstTry = true
+var gLives = 3
 
 var gLevel = {
     SIZE: 4,
     MINES: 2
 }
    
-
 function onInit(){
     buildBoard()
     renderMines()
@@ -43,13 +47,44 @@ function renderBoard() {
 
             strHTML += `\t <td data-i="${i}" data-j="${j}"
                         class="cell covered ${className}" 
-                        onclick="onCellClicked(this, ${i}, ${j})">
+                        onclick="onCellClicked(this, ${i}, ${j})"
+                        oncontextmenu="handleRightClick(event, this)">
                     </td>\n`;
         }
         strHTML += `</tr>\n`;
     }
     const elCells = document.querySelector('.board-cells');
     elCells.innerHTML = strHTML;
+}
+
+function renderMines(){
+    gMines = []
+    var positions = []
+    var boardSize = gBoard.length * gBoard[0].length
+
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+            positions.push({ i, j })
+        }
+    }
+
+    for (var n = boardSize - 1; n > 0; n--) {
+        var k = Math.floor(Math.random() * (n + 1));
+        [positions[n], positions[k]] = [positions[k], positions[n]]
+    }
+
+    for (var i = 0; i < gLevel.MINES; i++) {
+        var mineLocation = positions[i];
+        gBoard[mineLocation.i][mineLocation.j].isMine = true
+        gMines.push({ i: mineLocation.i, j: mineLocation.j })
+    } 
+    console.log(gMines);
+}
+
+function renderCell(i, j, value) {
+    const elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`);
+    elCell.innerText = value;
+    elCell.classList = 'cell'
 }
 
 function setMinesNegsCount(gBoard){
@@ -75,22 +110,58 @@ function checkNeighbors(board, rowIdx, colIdx) {
             }
         }
     }
+    if(count === 0) count = ''
     return count;
 }
 
 function onCellClicked(elCell, i, j){
-    const cell = gBoard[i][j];
-    if (!cell.isShown) {
-        cell.isShown = true;
+    const currCell = gBoard[i][j];
+    if(currCell.isShown) return
+    if(currCell.isMine){
+        if (isMineFirstTry === true){
+            onInit()
+            onCellClicked(elCell, i, j)
+            var cellValue = checkNeighbors(gBoard, i, j)
+            renderCell(i, j, cellValue)
+            elCell.classList.remove('covered')
+            console.log('pressed on a mine in first try');
+            console.log('new cell value is:', cellValue);
+        }else{
+            currCell.isShown = true;
+            gLives--
+            elCell.innerText = MINE
+            elCell.classList.remove('covered')
+            elLives = document.querySelector('.lives')
+            elLives.innerHTML = `${gLives} LIVES LEFT`
+            console.log(`You only got ${gLives} more lives !!`)
+            if(gLives === 0){
+                elBtn = document.querySelector('.restart')
+                elBtn.innerHTML = '💀'
+                console.log('Game over')
+            }
+            // need to put a function of game over
+        }
+    }else{
+        isMineFirstTry = false
+        currCell.isShown = true;
         elCell.classList.remove('covered');
-        if(cell.isMine){
-            elCell.innerText = MINE    
-        }else if(cell.minesAroundCount > 0){
-            elCell.innerText = cell.minesAroundCount
+        if(currCell.minesAroundCount){
+            elCell.innerText = currCell.minesAroundCount
         }else{
             expandShown(gBoard,i, j)
         }
     }
+}
+
+function restart(size,mines){
+    gLevel.MINES = mines
+    gLevel.SIZE = size
+    onInit()
+    elBtn = document.querySelector('.restart')
+    elBtn.innerHTML = '😋'
+    gLives = 3
+    elLives = document.querySelector('.lives')
+    elLives.innerHTML = `${gLives} LIVES LEFT`
 }
 
 function expandShown(board,rowIdx, colIdx){
@@ -107,6 +178,7 @@ function expandShown(board,rowIdx, colIdx){
                 if (currCell.minesAroundCount > 0) {
                     elCell.innerText = currCell.minesAroundCount;
                 } else {
+                    elCell.innerText = ''
                     expandShown(board, i, j);
                 }
             }
@@ -114,33 +186,20 @@ function expandShown(board,rowIdx, colIdx){
     }
 }
 
-function renderMines(){
-    gMines = []
-    var positions = []
-    var boardSize = gBoard.length * gBoard[0].length
-
-    for (var i = 0; i < gBoard.length; i++) {
-        for (var j = 0; j < gBoard[0].length; j++) {
-            positions.push({ i, j })
-        }
+function handleRightClick(event, element) {
+    event.preventDefault();
+    if(element.innerText){
+        element.innerText = ''
+    }else{
+        element.innerText = '❓'
     }
-
-    for (var n = boardSize - 1; n > 0; n--) {
-        var k = Math.floor(Math.random() * (n + 1));
-        [positions[n], positions[k]] = [positions[k], positions[n]]
-    }
-
-    for (var i = 0; i < gLevel.MINES; i++) {
-        var mineLocation = positions[i];
-        gBoard[mineLocation.i][mineLocation.j].isMine = true
-        gMines.push({ i: mineLocation.i, j: mineLocation.j })
-    } 
-    console.log(gMines);
-}   
+}
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
 }
+
+
   

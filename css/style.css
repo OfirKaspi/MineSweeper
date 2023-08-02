@@ -1,7 +1,16 @@
-
 body {
     font-family: 'Open Sans', sans-serif;
-    background-color: black;
+    background-color: #02001f;
+    text-align: center;
+    color: #fff;
+}
+
+header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: gray;
     text-align: center;
 }
 
@@ -10,41 +19,59 @@ footer {
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: #222;
-    color: #fff;
+    background-color: gray;
     padding: 20px;
     text-align: center;
 }
 
 footer p {
     margin: 0;
-    font-size: 18px;
+    font-size: 20px;
 }
 
 footer .signature {
     font-size: 24px;
     font-weight: bold;
+    color:  #9e0808
 }
 
-footer .signature span {
-    color: #ffcc00;
+footer span{
+    color: #9e0808;
 }
 
-h1 {
-    color: white;
+.sub-header{
+    margin-top: 100px;
 }
 
 .board {
-    margin: auto;
+    margin: 20px auto 20px;
 }
 
 .cell {
     font-family: 'Bungee Spice', cursive;
-    width: 50px;
-    height: 50px;
-    font-size: 30px;
+    width: 26px;
+    height: 26px;
+    font-size: 18px;
     background-color: white;
     border: 1px solid black;
+    cursor: pointer;
+}
+
+.difficulty{
+    font-size: 20px;
+    background-color: #02001f;
+    color: white;
+    border: none;
+    cursor: pointer;
+} 
+
+.restart{
+    font-size: 30px;
+    background-color: #02001f;
+    border: none;
+    cursor: pointer;
+    /* height: 50px;
+    width: 50px; */
 }
 
 .mine {
@@ -53,5 +80,5 @@ h1 {
 
 .covered {
     background-color: gray;
-    color: gray;
 }
+

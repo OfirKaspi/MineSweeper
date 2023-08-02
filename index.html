@@ -10,10 +10,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Open+Sans:wght@300;700&display=swap" rel="stylesheet">
 </head>
 <body onload="onInit()">
-    <h1 class="center">Minesweeper</h1>
+    <header>
+        <h1 class="center">MINESWEEPER</h1>
+    </header>
+    <div class="sub-header">
+        <h2 class="lives">3 LIVES LEFT</h2>
+        <button class="restart" onclick="restart()">😋</button>
+    </div>
     <table class="board">
         <tbody class="board-cells"></tbody>
     </table>
+    <div>
+        <button class="difficulty" onclick="restart(4,2)">EASY</button>
+        <button class="difficulty" onclick="restart(8,14)">HARD</button>
+        <button class="difficulty" onclick="restart(12,32)">EXTREME</button>
+    </div>
     <footer>
         <p>Designed and written with <span>&hearts;</span> by <span class="signature">OFIR KASPI</span></p>
     </footer>
