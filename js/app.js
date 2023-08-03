@@ -181,7 +181,6 @@ function handleRightClick(event, element) {
     if(element.innerText){
         element.innerText = ''
         currCell.isMarked = false
-        checkVictory()
     }else{
         element.innerText = '❓'
         currCell.isMarked = true
@@ -237,6 +236,7 @@ function checkVictory(){
         }
     }
     if (countShown < gLevel.SIZE**2 - gLevel.MINES) return
+    if(countShown + countMarked !== gLevel.SIZE**2) return
     if (countMarked < gLevel.MINES - livesLeft) return
     isGameOver = true
     elBtn = document.querySelector('.restart')
