@@ -7,8 +7,8 @@ var gBoard
 var gMines
 var gLives = 3
 var isMineFirstTry
-var isVictory
-var isLose
+var isGameOver
+var gHint
 
 
 var gLevel = {
@@ -21,9 +21,9 @@ function onInit(){
     renderMines()
     setMinesNegsCount(gBoard)
     renderBoard()
+    resetHints()
     isMineFirstTry = true
-    isVictory = false
-    isLose = false
+    isGameOver = false
 }
 
 function buildBoard() {
@@ -120,8 +120,13 @@ function checkNeighbors(board, rowIdx, colIdx) {
 
 function onCellClicked(elCell, i, j){
     const currCell = gBoard[i][j];
-    if(isVictory || isLose) return
+    if(isGameOver) return
     if(currCell.isShown || currCell.isMarked) return
+    if(gHint) {
+        removeCoveredForOneSecond(i, j)
+        gHint = false
+        return
+    }   
     if(currCell.isMine){
         if (isMineFirstTry === true){
             onInit()
@@ -143,8 +148,9 @@ function onCellClicked(elCell, i, j){
                 elBtn = document.querySelector('.restart')
                 elBtn.innerHTML = '💀'
                 console.log('Game over')
+                checkLose()
+                return
             }
-            // need to put a function of game over
         }
     }else{
         isMineFirstTry = false
@@ -153,16 +159,15 @@ function onCellClicked(elCell, i, j){
         if(currCell.minesAroundCount){
             elCell.innerText = currCell.minesAroundCount
         }else{
-            expandShown(gBoard,i, j)
+            expandShown(i, j)
         }
     }
-    checkLose()
     checkVictory()
 }
 
 function handleRightClick(event, element) {
     event.preventDefault();
-    if(isVictory || isLose) return
+    if(isGameOver) return
     const i = parseInt(element.getAttribute('data-i'));
     const j = parseInt(element.getAttribute('data-j')); 
     const currCell = gBoard[i][j]
@@ -189,13 +194,13 @@ function restart(size,mines){
     elLives.innerHTML = `${gLives} LIVES LEFT`
 }
 
-function expandShown(board,rowIdx, colIdx){
+function expandShown(rowIdx, colIdx){
     for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
-        if (i < 0 || i >= board.length) continue;
+        if (i < 0 || i >= gLevel.SIZE) continue;
         for (var j = colIdx - 1; j <= colIdx + 1; j++) {
             if (i === rowIdx && j === colIdx) continue;
-            if (j < 0 || j >= board[0].length) continue;
-            var currCell = board[i][j];
+            if (j < 0 || j >= gLevel.SIZE) continue;
+            var currCell = gBoard[i][j];
             if(!currCell.isMine && !currCell.isShown && !currCell.isMarked){
                 currCell.isShown = true
                 var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`);
@@ -204,7 +209,7 @@ function expandShown(board,rowIdx, colIdx){
                     elCell.innerText = currCell.minesAroundCount;
                 } else {
                     elCell.innerText = ''
-                    expandShown(board, i, j);
+                    expandShown(i, j);
                 }
             }
         }
@@ -224,7 +229,7 @@ function checkVictory(){
     }
     if (countShown < gLevel.SIZE**2 - gLevel.MINES) return
     if (countMarked < gLevel.MINES - livesLeft) return
-    isVictory = true
+    isGameOver = true
     elBtn = document.querySelector('.restart')
     elBtn.innerHTML = '🍟'
     setTimeout(function() {
@@ -233,16 +238,61 @@ function checkVictory(){
 }
 
 function checkLose(){
-    if (gLives !== 0) return
     elMines = document.querySelectorAll('.mine')
     for(var i = 0; i < elMines.length; i++){
         elMines[i].classList.remove('covered')
         elMines[i].innerText = MINE
     }
-    isLose = true
+    isGameOver = true
     setTimeout(function() {
         alert('YOU LOSE!!!');
     }, 200);
+}
+
+function getHint(element){
+    if(isGameOver) return
+    if(gHint) return
+    if(element.src = 'images/img.1.png'){
+        element.src = 'images/img.2.png'
+        gHint = true
+        console.log(gHint);
+    }
+}
+
+function resetHints(){
+    gHint = false
+    var elHints = document.querySelectorAll('.img')
+    for(var i = 0; i < elHints.length; i++){
+        elHints[i].src = 'images/img.1.png'
+    }
+}
+
+function removeCoveredForOneSecond(rowIdx, colIdx) {
+    var neighbors = []
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i >= gLevel.SIZE) continue;
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (j < 0 || j >= gLevel.SIZE) continue;
+            var currCell = gBoard[i][j];
+            var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`);
+            elCell.classList.remove('covered')
+            if (currCell.isMine) {
+                elCell.innerText = MINE
+                console.log('a mine')
+            }else if (currCell.minesAroundCount){
+                elCell.innerText = currCell.minesAroundCount
+                console.log('not a mine');
+            }
+            neighbors.push(elCell)
+            }
+    }
+    console.log(neighbors)
+    setTimeout(function () {
+        for(var i = 0; i < neighbors.length; i++){
+            neighbors[i].classList.add('covered');
+            neighbors[i].innerText = ''
+        }
+    }, 1000)
 }
 
 function getRandomInt(min, max) {
@@ -250,6 +300,3 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
 }
-
-
-  

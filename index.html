@@ -15,8 +15,14 @@
     </header>
     <div class="sub-header">
         <h2 class="lives">3 LIVES LEFT</h2>
-        <button class="restart" onclick="restart(gLevel.SIZE, gLevel.MINES)">😋</button>
+        <div>
+            <img class="img img1" src="images/img.1.png" onclick="getHint(this)">
+            <img class="img img2" src="images/img.1.png" onclick="getHint(this)">
+            <img class="img img3" src="images/img.1.png" onclick="getHint(this)">
+            <button class="restart" onclick="restart(gLevel.SIZE, gLevel.MINES)">😋</button>
+        </div>
     </div>
+
     <table class="board">
         <tbody class="board-cells"></tbody>
     </table>
