@@ -9,6 +9,9 @@ var gLives = 3
 var isMineFirstTry
 var isGameOver
 var gHint
+var timerInterval
+var gSafePlace
+
 
 
 var gLevel = {
@@ -21,7 +24,7 @@ function onInit(){
     renderMines()
     setMinesNegsCount(gBoard)
     renderBoard()
-    resetHints()
+    resetHelps()
     isMineFirstTry = true
     isGameOver = false
 }
@@ -142,7 +145,7 @@ function onCellClicked(elCell, i, j){
             elCell.innerText = MINE
             elCell.classList.remove('covered')
             elLives = document.querySelector('.lives')
-            elLives.innerHTML = `${gLives} LIVES LEFT`
+            elLives.innerHTML = `💕 : ${gLives}`
             console.log(`You only got ${gLives} more lives !!`)
             if(gLives === 0){
                 elBtn = document.querySelector('.restart')
@@ -153,7 +156,10 @@ function onCellClicked(elCell, i, j){
             }
         }
     }else{
-        isMineFirstTry = false
+        if(isMineFirstTry){
+            isMineFirstTry = false
+            startTimer()
+        }
         currCell.isShown = true;
         elCell.classList.remove('covered');
         if(currCell.minesAroundCount){
@@ -186,12 +192,15 @@ function handleRightClick(event, element) {
 function restart(size,mines){
     gLevel.MINES = mines
     gLevel.SIZE = size
+    clearInterval(timerInterval)
     onInit()
+    elTimer = document.querySelector('.timer')
+    elTimer.innerHTML = ' ⌛ : '
     elBtn = document.querySelector('.restart')
     elBtn.innerHTML = '😋'
     gLives = 3
     elLives = document.querySelector('.lives')
-    elLives.innerHTML = `${gLives} LIVES LEFT`
+    elLives.innerHTML = `💕 : ${gLives}`
 }
 
 function expandShown(rowIdx, colIdx){
@@ -232,6 +241,7 @@ function checkVictory(){
     isGameOver = true
     elBtn = document.querySelector('.restart')
     elBtn.innerHTML = '🍟'
+    clearInterval(timerInterval)
     setTimeout(function() {
         alert('WINNER!!!');
     }, 200);
@@ -244,26 +254,52 @@ function checkLose(){
         elMines[i].innerText = MINE
     }
     isGameOver = true
+    clearInterval(timerInterval)
     setTimeout(function() {
         alert('YOU LOSE!!!');
     }, 200);
 }
 
 function getHint(element){
-    if(isGameOver) return
-    if(gHint) return
-    if(element.src = 'images/img.1.png'){
+    if(isGameOver || gHint || isMineFirstTry) return
+    if(element.classList.contains('unused')){
+        element.classList.remove('unused')
         element.src = 'images/img.2.png'
         gHint = true
         console.log(gHint);
     }
 }
 
-function resetHints(){
+function getSafePlace(element){
+    if(isGameOver || gSafePlace || isMineFirstTry) return
+    if(element.classList.contains('unused')){
+        element.classList.remove('unused')
+        element.src = 'images/safe.2.png'
+        var cell = getRandomEmptyCell()
+        if (cell) {
+            var i = cell.i;
+            var j = cell.j;
+            var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`);
+            elCell.classList.remove('covered');
+            var currCell = gBoard[i][j]
+            if(currCell.minesAroundCount) elCell.innerText = currCell.minesAroundCount
+            setTimeout(function () {
+                elCell.classList.add('covered');
+                elCell.innerText = ''
+            }, 2000);
+        }
+    }
+}
+
+function resetHelps(){
     gHint = false
-    var elHints = document.querySelectorAll('.img')
-    for(var i = 0; i < elHints.length; i++){
+    var elHints = document.querySelectorAll('.hints')
+    var elsafes = document.querySelectorAll('.safes')
+    for(var i = 0; i < 3; i++){
         elHints[i].src = 'images/img.1.png'
+        elsafes[i].src = 'images/safe.1.png'
+        elHints[i].classList.add('unused')
+        elsafes[i].classList.add('unused')
     }
 }
 
@@ -299,4 +335,30 @@ function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
+}
+
+function getRandomEmptyCell() {
+    var emptyCells = [];
+    for (var i = 0; i < gLevel.SIZE; i++) {
+        for (var j = 0; j < gLevel.SIZE; j++) {
+            if (!gBoard[i][j].isMine && !gBoard[i][j].isShown) {
+                emptyCells.push({ i, j });
+            }
+        }
+    }
+
+    if (emptyCells.length === 0) return null;
+
+    var randomIdx = getRandomInt(0, emptyCells.length);
+    return emptyCells[randomIdx];
+}
+
+function startTimer() {
+    let startTime = Date.now()
+    function updateTimer() {
+      const currentTime = Date.now()
+      const elapsedSeconds = Math.floor((currentTime - startTime) / 1000)
+      document.querySelector('.timer').innerText = ` ⌛ : ${elapsedSeconds}`
+    }
+    timerInterval = setInterval(updateTimer, 1000)
 }

@@ -14,12 +14,18 @@
         <h1 class="center">MINESWEEPER</h1>
     </header>
     <div class="sub-header">
-        <h2 class="lives">3 LIVES LEFT</h2>
         <div>
-            <img class="img img1" src="images/img.1.png" onclick="getHint(this)">
-            <img class="img img2" src="images/img.1.png" onclick="getHint(this)">
-            <img class="img img3" src="images/img.1.png" onclick="getHint(this)">
+            <h2 class="lives">💕 : 3 </h2>
+            <h2 class="timer"> ⌛ : 0</h2>
+        </div>
+        <div>
+            <img class="hints unused" src="images/img.1.png" onclick="getHint(this)">
+            <img class="hints unused" src="images/img.1.png" onclick="getHint(this)">
+            <img class="hints unused" src="images/img.1.png" onclick="getHint(this)">
             <button class="restart" onclick="restart(gLevel.SIZE, gLevel.MINES)">😋</button>
+            <img class="safes unused" src="images/safe.1.png" onclick="getSafePlace(this)">
+            <img class="safes unused" src="images/safe.1.png" onclick="getSafePlace(this)">
+            <img class="safes unused" src="images/safe.1.png" onclick="getSafePlace(this)">
         </div>
     </div>
 

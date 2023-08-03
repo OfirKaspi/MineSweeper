@@ -7,6 +7,7 @@ body {
 
 img{
     height: 45px;
+    cursor: pointer;
 }
 
 header{
@@ -39,7 +40,7 @@ footer .signature {
     color:  #9e0808
 }
 
-footer span{
+span{
     color: #9e0808;
 }
 
@@ -57,6 +58,18 @@ footer span{
 
 .board {
     margin: 20px auto 20px;
+}
+
+.counters{
+    gap: 20px;
+}
+
+.lives{
+    font-family: 'Bungee Spice', cursive;
+}
+
+.timer{
+    font-family: 'Bungee Spice', cursive;
 }
 
 .cell {
