@@ -9,9 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Open+Sans:wght@300;700&display=swap" rel="stylesheet">
 </head>
-<body onload="onInit()">
+<body class="dark-mode" onload="onInit()">
     <header>
-        <h1 class="center">MINESWEEPER</h1>
+        <h1 class="center">💣 MINESWEEPER 💣</h1>
     </header>
     <div class="sub-header">
         <div>
@@ -33,9 +33,10 @@
         <tbody class="board-cells"></tbody>
     </table>
     <div>
-        <button class="difficulty" onclick="restart(4,2)">EASY</button>
-        <button class="difficulty" onclick="restart(8,14)">HARD</button>
-        <button class="difficulty" onclick="restart(12,32)">EXTREME</button>
+        <button class="difficulty difficulty-dark-mode" onclick="restart(4,2)">EASY</button>
+        <button class="difficulty difficulty-dark-mode" onclick="restart(8,14)">HARD</button>
+        <button class="difficulty difficulty-dark-mode" onclick="restart(12,32)">EXTREME</button>
+        <button class="difficulty difficulty-dark-mode" onclick="darkMode(this)">👻DARK-MODE</button>
     </div>
     <footer>
         <p>Designed and written with <span>&hearts;</span> by <span class="signature">OFIR KASPI</span></p>

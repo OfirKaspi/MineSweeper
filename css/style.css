@@ -1,8 +1,13 @@
 body {
     font-family: 'Open Sans', sans-serif;
-    background-color: #02001f;
+    background-color: whitesmoke;
     text-align: center;
     color: #fff;
+}
+
+.dark-mode {
+    background-color: #02001f;
+    text-align: center;
 }
 
 img{
@@ -15,6 +20,7 @@ header{
     top: 0;
     left: 0;
     width: 100%;
+    height: 70px;
     background-color: gray;
     text-align: center;
 }
@@ -45,7 +51,7 @@ span{
 }
 
 .sub-header{
-    margin-top: 100px;
+    margin-top: 70px;
 }
 
 .sub-header > div{
@@ -78,21 +84,30 @@ span{
     height: 26px;
     font-size: 18px;
     background-color: white;
-    border: 1px solid black;
+    border: 1px solid #02001f;
     cursor: pointer;
 }
 
 .difficulty{
     font-size: 20px;
-    background-color: #02001f;
-    color: white;
+    background-color: transparent;
+    color: rgb(0, 0, 0);
     border: none;
     cursor: pointer;
+}
+
+.difficulty-dark-mode{
+    color: #fff;
+}
+
+.difficulty:hover {
+    transition: 0.3s;
+    color: rgb(255, 153, 0);
 } 
 
 .restart{
     font-size: 35px;
-    background-color: #02001f;
+    background-color: transparent;
     border: none;
     cursor: pointer;
 }
@@ -101,6 +116,6 @@ span{
     background-color: red;
 }
 
-.covered {
+/* .covered {
     background-color: gray;
-}
+} */

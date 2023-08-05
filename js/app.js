@@ -311,15 +311,17 @@ function removeCoveredForOneSecond(rowIdx, colIdx) {
             if (j < 0 || j >= gLevel.SIZE) continue;
             var currCell = gBoard[i][j];
             var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`);
-            elCell.classList.remove('covered')
-            if (currCell.isMine) {
-                elCell.innerText = MINE
-                console.log('a mine')
-            }else if (currCell.minesAroundCount){
-                elCell.innerText = currCell.minesAroundCount
-                console.log('not a mine');
+            if (elCell.classList.contains('covered')){
+                elCell.classList.remove('covered')
+                if (currCell.isMine) {
+                    elCell.innerText = MINE
+                    console.log('a mine')
+                }else if (currCell.minesAroundCount){
+                    elCell.innerText = currCell.minesAroundCount
+                    console.log('not a mine');
+                }
+                neighbors.push(elCell)
             }
-            neighbors.push(elCell)
             }
     }
     console.log(neighbors)
@@ -329,6 +331,20 @@ function removeCoveredForOneSecond(rowIdx, colIdx) {
             neighbors[i].innerText = ''
         }
     }, 1000)
+}
+
+function darkMode(element){
+    if(element.innerText === '👻DARK-MODE'){
+        element.innerText = '🌞BRIGHT-MODE'   
+    }else{
+        element.innerText = '👻DARK-MODE'
+    }
+    var elBody = document.querySelector('body')
+    elBody.classList.toggle('dark-mode')
+    var elBtns = document.querySelectorAll('.difficulty')
+    for(var i = 0; i < elBtns.length; i++){
+        elBtns[i].classList.toggle('difficulty-dark-mode')
+    } 
 }
 
 function getRandomInt(min, max) {
